@@ -7,9 +7,15 @@ language and flow are all configurable.
 
 ## Demo
 
-| Idle | Listening |
-| --- | --- |
-| ![Idle screen](docs/screenshots/idle.png) | ![Listening sheet](docs/screenshots/listening.png) |
+The sample app lets you switch interaction mode and presentation live.
+
+| Home | Bottom sheet: listening | Bottom sheet: review |
+| --- | --- | --- |
+| ![Home](docs/screenshots/home.png) | ![Bottom sheet listening](docs/screenshots/sheet-listening.png) | ![Bottom sheet review](docs/screenshots/sheet-review.png) |
+
+| Full screen: review | Full screen: error | Inline: review |
+| --- | --- | --- |
+| ![Full screen review](docs/screenshots/fullscreen-review.png) | ![Full screen error](docs/screenshots/fullscreen-error.png) | ![Inline review](docs/screenshots/inline-review.png) |
 
 ## Install
 
@@ -52,8 +58,26 @@ VoiceFab(
 VoiceCaptureSheet(controller)
 ```
 
-The FAB is optional: call `controller.onFabPressStart()` / `onStopListening()` from any UI, such
-as a mic icon in a search bar. Call `controller.onAppBackgrounded()` when your app pauses.
+The FAB is optional: call `controller.onFabPressStart()` / `onStopListening()` (or `onFabTap()` to
+toggle) from any UI, such as a mic icon in a search bar. Call `controller.onAppBackgrounded()` when
+your app pauses.
+
+### Interaction modes
+
+`VoiceInteractionMode.HoldToTalk` (default) records while the button is held. `TapToToggle` starts
+on one tap and stops on the next. Both are handled by `VoiceFab` and `controller.onFabTap()`.
+
+### Presentation
+
+`VoiceCaptureSheet(controller, config)` shows the capture UI in the container set by
+`config.presentation`:
+
+- `BottomSheet` (default): modal bottom sheet.
+- `FullScreen`: full-screen dialog.
+- `Inline`: rendered where you call it, inside your own layout.
+
+For full control, place `VoiceCaptureContent(controller, config)` anywhere in your UI. It is the
+bare listening/review/edit/error content with no container.
 
 ## Config options
 
@@ -63,6 +87,8 @@ Pass a `VoiceSearchConfig` to `rememberVoiceCaptureController`, `VoiceFab` and `
 val config = VoiceSearchConfig(
     languageTag = "en-GB",
     allowEdit = false,
+    interactionMode = VoiceInteractionMode.TapToToggle,
+    presentation = VoicePresentation.FullScreen,
     strings = VoiceSearchStrings.defaults().copy(send = "Search"),
     colors = VoiceSearchColors(fabIdleContainer = Color(0xFFFFC439)),
 )
@@ -77,6 +103,8 @@ val config = VoiceSearchConfig(
 | `preferOffline` | `false` | Prefer on-device recognition when a model is available. |
 | `allowEdit` | `true` | Show the "Edit" step before sending. |
 | `autoSend` | `false` | Skip review and deliver a non-blank transcript immediately. |
+| `interactionMode` | `HoldToTalk` | `HoldToTalk` or `TapToToggle` for `VoiceFab`. |
+| `presentation` | `BottomSheet` | `BottomSheet`, `FullScreen` or `Inline`. |
 
 To use another engine, implement `VoiceRecognizer` and pass it to `VoiceCaptureController`.
 

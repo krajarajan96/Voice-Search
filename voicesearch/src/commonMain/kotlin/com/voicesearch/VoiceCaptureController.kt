@@ -39,6 +39,11 @@ class VoiceCaptureController(
 
     fun onFabPressEnd() = onStopListening()
 
+    /** Tap-to-toggle: starts listening, or stops if already listening. */
+    fun onFabTap() {
+        if (isListening) onStopListening() else onFabPressStart()
+    }
+
     fun onStopListening() {
         recognizer.stopListening()
     }
