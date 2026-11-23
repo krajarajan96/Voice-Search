@@ -210,4 +210,16 @@ class VoiceCaptureControllerTest {
 
         assertEquals(VoiceSheetState.Review("hello"), controller.sheetState)
     }
+
+    @Test
+    fun onFabTap_togglesListening() {
+        val (controller, recognizer) = newController()
+
+        controller.onFabTap()
+        assertEquals(1, recognizer.startListeningCalls)
+        assertEquals(VoiceSheetState.Listening(""), controller.sheetState)
+
+        controller.onFabTap()
+        assertEquals(1, recognizer.stopListeningCalls)
+    }
 }

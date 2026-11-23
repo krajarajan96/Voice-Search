@@ -18,6 +18,8 @@ data class VoiceSearchStrings(
     val tryAgain: String = "Try again",
     val fabHoldToTalk: String = "Hold to talk",
     val fabListening: String = "Listening",
+    val fabTapToTalk: String = "Tap to talk",
+    val fabTapToStop: String = "Tap to stop",
     // Errors reported by the platform recognizers.
     val errorNoMatch: String = "Didn't catch that, please try again!",
     val errorSpeechTimeout: String = "No speech detected",
@@ -52,6 +54,27 @@ data class VoiceSearchColors(
     }
 }
 
+/** How the mic button behaves. */
+enum class VoiceInteractionMode {
+    /** Record while the button is held; releasing stops. */
+    HoldToTalk,
+
+    /** Tap once to start recording, tap again to stop. */
+    TapToToggle,
+}
+
+/** Where the capture UI (listening, review, edit, error) is shown. */
+enum class VoicePresentation {
+    /** Modal bottom sheet. */
+    BottomSheet,
+
+    /** Full-screen dialog. */
+    FullScreen,
+
+    /** In place, wherever [VoiceCaptureSheet] is called (or use [VoiceCaptureContent] directly). */
+    Inline,
+}
+
 /**
  * Everything a host can customize about voice search.
  *
@@ -60,6 +83,8 @@ data class VoiceSearchColors(
  * @property preferOffline Ask the engine to stay on-device when it can (best effort; falls back
  * to the network engine if no offline model is installed).
  * @property allowEdit Offer an "Edit" step between review and send.
+ * @property interactionMode Hold-to-talk or tap-to-toggle behavior for [VoiceFab].
+ * @property presentation Container for the capture UI.
  * @property autoSend Skip the review step and deliver a non-blank transcript immediately.
  */
 data class VoiceSearchConfig(
@@ -70,4 +95,6 @@ data class VoiceSearchConfig(
     val preferOffline: Boolean = false,
     val allowEdit: Boolean = true,
     val autoSend: Boolean = false,
+    val interactionMode: VoiceInteractionMode = VoiceInteractionMode.HoldToTalk,
+    val presentation: VoicePresentation = VoicePresentation.BottomSheet,
 )
